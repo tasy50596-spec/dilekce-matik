@@ -5,7 +5,8 @@ import google.generativeai as genai
 app = Flask(__name__)
 
 # Render Environment kısmına eklediğin GEMINI_API_KEY'i kullanır
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+# transport='rest' ekleyerek modelin bulunamama hatasını (404) engelliyoruz
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"), transport='rest')
 
 @app.route('/')
 def home():
@@ -16,17 +17,17 @@ def generate_dilekce():
     try:
         data = request.json
         prompt_text = data.get('prompt')
-        
-        # Yapay zeka modelini çağırıyoruz
-        model = genai.GenerativeModel('models/gemini-1.5-flash')
+
+        # En güncel ve kararlı Gemini 1.5 Flash modelini çağırıyoruz
+        model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt_text)
-        
+
         return jsonify({"dilekce": response.text})
     except Exception as e:
         print(f"Hata oluştu: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # Render'ın beklediği port ayarı
+    # Render'ın beklediği port ayarı (Varsayılan 10000)
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
