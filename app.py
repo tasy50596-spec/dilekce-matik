@@ -18,7 +18,7 @@ def generate_dilekce():
         prompt_text = data.get('prompt')
         
         # Yapay zeka modelini çağırıyoruz
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        model = genai.GenerativeModel('models/gemini-1.5-flash')
         response = model.generate_content(prompt_text)
         
         return jsonify({"dilekce": response.text})
